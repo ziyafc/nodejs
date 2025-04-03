@@ -1,54 +1,33 @@
-
 const express = require('express');
-const path = require('path');
-const fs = require('fs');
 const fetch = require('node-fetch');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const UPSTASH_URL = process.env.UPSTASH_REDIS_REST_URL;
-const UPSTASH_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
+const UPSTASH_URL = process.env.UPSTASH_REST_URL;
+const UPSTASH_TOKEN = process.env.UPSTASH_REST_TOKEN;
 
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Root route
 app.get('/', async (req, res) => {
-  const htmlPath = path.join(__dirname, 'views', 'index.html');
-  let html = fs.readFileSync(htmlPath, 'utf8');
-
   try {
-    // Redis'e değer yaz
-    await fetch(`${UPSTASH_URL}/set/hello/world`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${UPSTASH_TOKEN}`
-      }
-    });
-
-    // Redis'ten değer oku
+    // GET isteğiyle Redis'ten veri çek
     const response = await fetch(`${UPSTASH_URL}/get/hello`, {
       headers: {
         Authorization: `Bearer ${UPSTASH_TOKEN}`
       }
     });
 
-    const result = await response.json();
-    const redisValue = result.result || "boş";
+    const data = await response.json();
+    console.log("Upstash yanıtı:", data);
 
-    html = html.replace('{{REDIS_MESSAGE}}', `redis oldu bu iş: ${redisValue}`);
+    const value = data?.result || "bulunamadı";
+
+    res.send(`<h1>Upstash Test</h1><p>Redis değeri: <strong>${value}</strong></p>`);
   } catch (err) {
-    html = html.replace('{{REDIS_MESSAGE}}', `olmadı mk`);
+    console.error("Redis bağlantı hatası:", err);
+    res.send(`<h1>Upstash Test</h1><p style="color:red">Hata: Redis'e bağlanılamadı</p>`);
   }
-
-  res.send(html);
-});
-
-// 404 fallback
-app.use((req, res, next) => {
-  res.status(404).sendFile(path.join(__dirname, 'views', '404.html'));
 });
 
 app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
+  console.log(`✅ Sunucu çalışıyor: http://localhost:${PORT}`);
 });
