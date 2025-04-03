@@ -16,7 +16,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Redis bağlantı middleware'i
 app.use(async (req, res, next) => {
   const client = createClient({ url: process.env.REDIS_URL });
-
   try {
     await client.connect();
     await client.set('hello', 'world');
@@ -26,7 +25,6 @@ app.use(async (req, res, next) => {
   } catch (err) {
     res.locals.redisStatus = "olmadı mk";
   }
-
   next();
 });
 
@@ -38,6 +36,7 @@ app.use((req, res, next) => {
   res.status(404).sendFile(path.join(__dirname, 'views', '404.html'));
 });
 
-app.listen(PORT, () => {
+// Railway için 0.0.0.0 üzerinde dinleme
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running at http://localhost:${PORT}/`);
 });
