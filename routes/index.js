@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-// Anasayfada index.ejs render ediliyor
+// Anasayfa için EJS view render ediliyor
 router.get('/', (req, res) => {
   res.render('index');
 });

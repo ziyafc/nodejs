@@ -13,18 +13,26 @@ app.set('views', path.join(__dirname, 'views'));
 // Statik dosyalar
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Redis bağlantı middleware'i
-app.use(async (req, res, next) => {
-  const client = createClient({ url: process.env.REDIS_URL });
+// Global Redis bağlantısı ve durum mesajı
+let redisStatusMessage = "olmadı mk"; // Varsayılan hata mesajı
+
+const client = createClient({ url: process.env.REDIS_URL });
+client.connect().then(async () => {
   try {
-    await client.connect();
     await client.set('hello', 'world');
     const value = await client.get('hello');
-    res.locals.redisStatus = "redis oldu bu iş";
-    await client.quit();
+    redisStatusMessage = "redis oldu bu iş";
+    console.log("Global Redis bağlantısı başarılı:", value);
   } catch (err) {
-    res.locals.redisStatus = "olmadı mk";
+    console.error("Global Redis işlemi hatası:", err);
   }
+}).catch(err => {
+  console.error("Global Redis bağlantı hatası:", err);
+});
+
+// Tüm isteklere redisStatus'u ekleyen middleware
+app.use((req, res, next) => {
+  res.locals.redisStatus = redisStatusMessage;
   next();
 });
 
