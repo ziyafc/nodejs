@@ -1,14 +1,14 @@
 {
-  "name": "simple-node-app",
+  "name": "nodejs-app",
   "version": "1.0.0",
-  "description": "A simple Node.js application for testing",
+  "description": "A minimal Node.js web application.",
   "main": "app.js",
-  "scripts": {
-    "start": "node app.js"
-  },
+  "author": "alphasec",
+  "license": "MIT",
   "dependencies": {
     "express": "^4.19.2"
   },
-  "author": "",
-  "license": "ISC"
+  "scripts": {
+    "start": "node app.js"
+  }
 }
