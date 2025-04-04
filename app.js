@@ -1,29 +1,31 @@
+
 const express = require('express');
-const fetch = require('node-fetch');
+const fetch = require('node-fetch'); // v2 ile uyumlu
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// !!! Test için doğrudan yazılmış token ve URL (sadece geçici olarak kullan)
+// Açık token ve URL test için burada tanımlı (güvenli değil, sadece test)
 const UPSTASH_URL = "https://coherent-ant-56796.upstash.io";
-const UPSTASH_TOKEN = "Ad3cAAIjcDEyMDkxNzAzY2YwN2U0MWRiYjEyNmM4M2U0ZDE4ZGIw0H..."; // tüm token
+const UPSTASH_TOKEN = "Ad3cAAIjcDEyMDkxNzAzY2YwN2U0MWRiYjEyNmM4M2U0ZDE4ZGIw0HAXXXXXXXXXXXXX";
 
 app.get('/', async (req, res) => {
   try {
     const response = await fetch(`${UPSTASH_URL}/get/hello`, {
+      method: 'GET',
       headers: {
         Authorization: `Bearer ${UPSTASH_TOKEN}`
       }
     });
 
-    const data = await response.json();
-    console.log("Upstash yanıtı:", data);
+    const result = await response.json();
+    console.log("Upstash yanıtı:", result);
 
-    const value = data?.result || "bulunamadı";
-    res.send(`<h1>Upstash Test</h1><p>Redis değeri: <strong>${value}</strong></p>`);
+    const value = result.result || "bulunamadı";
+    res.send(`<h1>Upstash Test (v2)</h1><p>Redis değeri: <strong>${value}</strong></p>`);
   } catch (err) {
     console.error("Redis bağlantı hatası:", err);
-    res.send(`<h1>Upstash Test</h1><p style="color:red">Hata: Redis'e bağlanılamadı</p>`);
+    res.send(`<h1>Upstash Test (v2)</h1><p style="color:red">Hata: Redis'e bağlanılamadı</p>`);
   }
 });
 
