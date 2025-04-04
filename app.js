@@ -6,7 +6,7 @@ const PORT = process.env.PORT || 3000;
 
 // ✅ Hardcoded Upstash bilgileri (test için)
 const UPSTASH_URL = "https://coherent-ant-56796.upstash.io";
-const UPSTASH_TOKEN = "Ad3cAAIjcDEyMDkxNzAzY2YwN2U0MWRiYjEyNmM4M2U0ZDE4ZGIw0HAXXXXXXXXXXXXX";
+const UPSTASH_TOKEN = "Ad3cAAIjcDEyMDkxNzAzY2YwN2U0MWRiYjEyNmM4M2U0ZDE4ZGIwOHAxMA";
 
 app.get('/', async (req, res) => {
   try {
