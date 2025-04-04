@@ -9,20 +9,20 @@ const { createClient } = require('@supabase/supabase-js');
 // -------------------------------------
 const PORT = process.env.PORT || 3000;
 
-// Upstash Redis - sabit örnek:
+// Upstash Redis (örnek)
 const UPSTASH_URL = "https://coherent-ant-56796.upstash.io";
 const UPSTASH_TOKEN = "Ad3cAAIjcDEyMDkxNzAzY2YwN2U0MWRiYjEyNmM4M2U0ZDE4ZGIwOHAxMA";
 
-// Supabase - service role key önerilir
+// Supabase (service_role önerilir)
 const SUPABASE_URL = "https://hfqnvwcecosxcwixrruu.supabase.co";
-const SUPABASE_SERVICE_ROLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmcW52d2NlY29zeGN3aXhycnV1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTczODU3MTY0NiwiZXhwIjoyMDU0MTQ3NjQ2fQ.T_vuzvJ7bqADK9U7_3KzjuhuWRF4Bx3t0wPnLOfVZTM";
+const SUPABASE_SERVICE_ROLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmcW52d2NlY29zeGN3aXhycnV1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTczODU3MTY0NiwiZXhwIjoyMDU0MTQ3NjQ2fQ.T_vuzvJ7bqADK9U7_3KzjuhuWRF4Bx3t0wPnLOfVZTM"; // kısaltılmış
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
 // -------------------------------------
 // 2) Express Kurulumu
 // -------------------------------------
 const app = express();
-app.use(cors({ origin: '*' })); // Stackblitz vb. için
+app.use(cors({ origin: '*' })); // Farklı domainlerden erişim
 
 // Basit test endpoint
 app.get('/', (req, res) => {
@@ -151,7 +151,7 @@ app.get('/api/price-grid', async (req, res) => {
         vatRateLookup[r.country_code] = r.vat_rate;
       });
 
-      // build currency_prices
+      // build currencyPrices
       const currencyPrices = {};
       for (const currency of sku.sku_currencies || []) {
         const vatRate = vatRateLookup[currency.currency_code] || 0;
@@ -177,7 +177,8 @@ app.get('/api/price-grid', async (req, res) => {
         rev_share_override: sku.product.rev_share_override,
         active_promo: activePromo ? 'Y' : 'N',
         discount_rate: activePromo ? activePromo.discount : null,
-        currency_prices
+        // 🔥 Aşağıdaki satır: property adı "currency_prices", değeri "currencyPrices"
+        currency_prices: currencyPrices
       });
     }
 
